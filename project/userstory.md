@@ -2,6 +2,10 @@ Cadastrar no Sistema: Eu, como usuário, quero me cadastrar no sistema, para que
 
 Login no Sistema: Eu, como usuário, quero fazer login no sistema, para que eu possa acessar minhas funcionalidades específicas.
 
+Cadastrar Entidade Empregadora: Eu, como cliente, quero cadastrar entidade empregadora, para que eu possa fornecer informações sobre meu vínculo profissional.
+
+Cadastrar Rendimentos: Eu, como cliente, quero cadastrar rendimentos, para que eu possa comprovar minha capacidade financeira para alugar um veículo.
+
 Introduzir Pedido de Aluguel: Eu, como cliente, quero introduzir um pedido de aluguel, para que eu possa iniciar o processo de contratação do veículo desejado.
 
 Cancelar Pedido de Aluguel: Eu, como cliente, quero cancelar pedido de aluguel, para que eu possa desistir da locação sem penalidades.
