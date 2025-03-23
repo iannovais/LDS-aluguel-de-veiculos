@@ -1,39 +1,23 @@
-Eu, como cliente, quero me cadastrar no sistema com um login e senha, para que eu possa realizar pedidos de aluguel de automóveis.
+Cadastrar no Sistema: Eu, como usuário, quero me cadastrar no sistema, para que eu possa acessar as funcionalidades disponíveis para meu perfil.
 
-Eu, como cliente, quero fazer login no sistema com meu usuário e senha, para que eu possa acessar minhas funcionalidades específicas.
+Login no Sistema: Eu, como usuário, quero fazer login no sistema, para que eu possa acessar minhas funcionalidades específicas.
 
-Eu, como cliente, quero que o sistema permita o acesso apenas a usuários cadastrados, para garantir segurança e controle.
+Introduzir Pedido de Aluguel: Eu, como cliente, quero introduzir um pedido de aluguel, para que eu possa iniciar o processo de contratação do veículo desejado.
 
-Eu, como cliente, quero introduzir um pedido de aluguel de um automóvel, para que eu possa iniciar o processo de contratação.
+Cancelar Pedido de Aluguel: Eu, como cliente, quero cancelar pedido de aluguel, para que eu possa desistir da locação sem penalidades.
 
-Eu, como usuário, quero modificar um pedido de aluguel, para que eu possa ajustar informações antes da aprovação.
+Consultar Pedido de Aluguel: Eu, como cliente, quero consultar pedido de aluguel, para que eu possa acompanhar o status da solicitação e saber quando o veículo estará disponível.
 
-Eu, como cliente, quero cancelar um pedido de aluguel, para que eu possa interromper o processo de contratação.
+Modificar Pedido de Aluguel: Eu, como cliente, quero modificar pedido de aluguel, para que eu possa corrigir informações ou alterar detalhes da solicitação.
 
-Eu, como cliente, quero consultar meus pedidos de aluguel, para que eu possa acompanhar o status.
+Avaliar Pedido de Aluguel: Eu, como agente, quero avaliar pedido de aluguel, para que eu possa verificar sua viabilidade financeira e aprovar ou recusar a solicitação.
 
-Eu, como cliente, quero acessar os detalhes do contrato de aluguel, para que eu possa visualizar as condições acordadas.
+Executar Contrato: Eu, como agente, quero executar contrato, para que a transação seja formalizada e o cliente possa retirar o veículo.
 
-Eu, como cliente, quero cadastrar e atualizar meus dados pessoais, para que minhas informações estejam sempre atualizadas.
+Analisar Pedido Financeiro: Eu, como agente, quero analisar pedido financeiro, para que eu possa garantir que o pagamento será viabilizado corretamente.
 
-Eu, como cliente, quero acessar o sistema via Internet, para que eu possa realizar pedidos e consultas de qualquer local.
+Registrar Automóvel: Eu, como agente, quero registrar automóvel, para que a frota de veículos disponíveis para aluguel esteja sempre atualizada.
 
-Eu, como agente, quero me cadastrar no sistema, para que eu possa analisar e modificar pedidos de aluguel.
+Conceder Contrato de Crédito: Eu, como banco, quero conceder contrato de crédito, para que os clientes possam financiar a locação do veículo de acordo com sua análise financeira.
 
-Eu, como agente, quero fazer login no sistema com meu usuário e senha, para que eu possa acessar minhas funcionalidades específicas.
-
-Eu, como agente, quero analisar pedidos de aluguel, para que eu possa avaliar sua viabilidade financeira.
-
-Eu, como usuário, quero modificar pedidos de aluguel, para que eu possa corrigir informações.
-
-Eu, como agente, quero avaliar pedidos de aluguel, para que eu possa emitir um parecer financeiro.
-
-Eu, como agente, quero associar contratos de aluguel a créditos concedidos por bancos, para que o pagamento seja viabilizado.
-
-Eu, como agente, quero executar um contrato de aluguel no sistema, para que a transação seja formalizada.
-
-Eu, como agente, quero consultar os dados dos clientes, para que eu possa avaliar sua capacidade financeira.
-
-Eu, como agente, quero registrar automóveis no sistema, para que eu possa manter o controle da frota alugada.
-
-Eu, como agente, quero acessar o sistema via Internet, para que eu possa gerenciar pedidos e contratos remotamente.
+Analisar Pedido Financeiro: Eu, como banco, quero analisar pedido financeiro, para que eu possa aprovar ou recusar crédito conforme critérios estabelecidos.
