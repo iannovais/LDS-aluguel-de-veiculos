@@ -22,6 +22,6 @@ Analisar Pedido Financeiro: Eu, como agente, quero analisar pedido financeiro, p
 
 Registrar Automóvel: Eu, como agente, quero registrar automóvel, para que a frota de veículos disponíveis para aluguel esteja sempre atualizada.
 
-Conceder Contrato de Crédito: Eu, como banco, quero conceder contrato de crédito, para que os clientes possam financiar a locação do veículo de acordo com sua análise financeira.
+Conceder Contrato de Crédito: Eu, como agente do banco, quero conceder contrato de crédito, para que os clientes possam financiar a locação do veículo de acordo com sua análise financeira.
 
-Analisar Pedido Financeiro: Eu, como banco, quero analisar pedido financeiro, para que eu possa aprovar ou recusar crédito conforme critérios estabelecidos.
+Analisar Pedido Financeiro: Eu, como agente do banco, quero analisar pedido financeiro, para que eu possa aprovar ou recusar crédito conforme critérios estabelecidos.
