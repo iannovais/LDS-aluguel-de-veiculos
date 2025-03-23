@@ -6,7 +6,7 @@ Eu, como cliente, quero que o sistema permita o acesso apenas a usuários cadast
 
 Eu, como cliente, quero introduzir um pedido de aluguel de um automóvel, para que eu possa iniciar o processo de contratação.
 
-Eu, como cliente, quero modificar um pedido de aluguel, para que eu possa ajustar informações antes da aprovação.
+Eu, como usuário, quero modificar um pedido de aluguel, para que eu possa ajustar informações antes da aprovação.
 
 Eu, como cliente, quero cancelar um pedido de aluguel, para que eu possa interromper o processo de contratação.
 
