@@ -3,28 +3,32 @@
 @startuml
 
 left to right direction
-
-actor Usuario
-actor Cliente
-actor Agente
-
-Usuario <|-- Cliente
-Usuario <|-- Agente
+actor "Cliente" as cliente
+actor "Agente" as agente
+actor "Empresa" as empresa
+actor "Banco" as banco
+actor "Usuario" as usuario
 
 rectangle "Sistema de Aluguel de Automóveis" {
-    Usuario --> (Entrar no sistema)
-    (Entrar no sistema) .> (Cadastrar no sistema) : include
-    Usuario --> (Registrar automóvel)
-    Usuario--> (Modificar pedido de aluguel)
+    usuario --> (Cadastrar no sistema)
+    usuario --> (Login no sistema)
+    usuario --> (Modificar pedido de aluguel)
+    usuario --> (Registrar automóvel)
 
-    Cliente --> (Introduzir pedido de aluguel)
-    Cliente --> (Consultar pedido de aluguel)
-    Cliente --> (Cancelar pedido de aluguel)
+    cliente --> (Introduzir pedido de aluguel)
+    cliente --> (Consultar pedido de aluguel)
+    cliente --> (Cancelar pedido de aluguel)
 
-    Agente --> (Avaliar pedido de aluguel)
-    Agente --> (Analisar pedido)
-    Agente --> (Executar contrato)
-    Agente--> (Associar contrato de crédito)
+    agente --> (Avaliar pedido de aluguel)
+    agente --> (Executar contrato)
+    agente --> (Analisar pedido financeiro)
+
+    banco --> (Conceder contrato de crédito)
+
+    usuario <|-- cliente
+    usuario <|-- agente
+    agente <|-- empresa
+    agente <|-- banco
 }
 
 @enduml
