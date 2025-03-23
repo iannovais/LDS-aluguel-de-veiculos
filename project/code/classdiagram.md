@@ -1,4 +1,4 @@
-```
+```code
 @startuml
 
 class Usuario {
