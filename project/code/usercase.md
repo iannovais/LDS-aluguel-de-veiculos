@@ -18,6 +18,7 @@ rectangle "Sistema de Aluguel de Automóveis" {
     cliente --> (Introduzir pedido de aluguel)
     cliente --> (Consultar pedido de aluguel)
     cliente --> (Cancelar pedido de aluguel)
+    cliente --> (Cadastrar renda)
 
     agente --> (Avaliar pedido de aluguel)
     agente --> (Executar contrato)
