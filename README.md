@@ -1,15 +1,13 @@
-# Nome do projeto
-Escreva um ou dois parágrafo resumindo o objetivo do seu projeto.
+# Vururu
+A empresa Vururu de aluguel de carros busca modernizar e automatizar seus processos de gestão de pedidos de aluguel, contratos e interações com clientes e agentes (empresas e bancos). Para isso, será desenvolvido um Sistema de Gestão de Aluguel que permitirá a gestão completa do ciclo de vida dos pedidos de aluguel, desde a solicitação até a execução do contrato.
 
 ## Integrantes
-* Nome completo do aluno 1
-* Nome completo do aluno 2
-* Nome completo do aluno 3
-* Nome completo do aluno 4
+* Ian dos Reis Novais
+* Saulo José Nascimento Silva
+* João Antônio Nascimento Pires
 
 ## Orientadores
-* Nome completo do professor 1
-* Nome completo do professor 2
+* Cleiton Silva Tavares
 
 ## Instruções de utilização
 Assim que a primeira versão do sistema estiver disponível, deverá complementar com as instruções de utilização. Descreva como instalar eventuais dependências e como executar a aplicação.
