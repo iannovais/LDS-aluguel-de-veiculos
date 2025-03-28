@@ -1,43 +1,33 @@
 ```code
-
 @startuml
 
-package "Sistema de Aluguel" {
-    package "Gestão de Pedidos e Contratos" {
-        class PedidoAluguel
-        class Contrato
-    }
-    
-    package "Gestão de Automóveis" {
-        class Automovel
-    }
-    
-    package "Gestão de Usuários" {
-        class Usuario
-        class Cliente
-        class Agente
-        class Banco
-        class Empresa
-    }
-    
-    package "Construção Dinâmica de Páginas Web" {
-        package "MVC" {
-            class Modelo
-            class Visao
-            class Controle
-        }
-    }
-    
-    package "Infraestrutura" {
-        class ServidorCentral
-        class ComputadoresLocais
-    }
+package "Camada Modelo" {
+    class PedidoAluguel
+    class Contrato
+    class Automovel
+    class Usuario
+    class Cliente
+    class Agente
+    class Banco
+}
+
+package "Camada Controle" {
+    class PedidoAluguelController
+    class ContratoController
+    class AutomovelController
+    class UsuarioController
+}
+
+package "Camada Visao" {
+    class PedidoAluguelView
+    class ContratoView
+    class AutomovelView
+    class UsuarioView
 }
 
 Usuario <|-- Cliente
 Usuario <|-- Agente
 Agente <|-- Banco
-Agente <|-- Empresa
 
 Cliente "1" -- "0..*" PedidoAluguel
 PedidoAluguel "1" -- "1" Automovel
@@ -46,12 +36,15 @@ Contrato "1" -- "0..1" Agente
 Contrato "1" -- "1" PedidoAluguel
 Banco "0..*" -- "1" Cliente
 
-ServidorCentral -- ComputadoresLocais : Conexão via Internet
+PedidoAluguelController -- PedidoAluguel
+ContratoController -- Contrato
+AutomovelController -- Automovel
+UsuarioController -- Usuario
 
-Modelo -- Controle
-Controle -- Visao
-Visao -- Modelo
+PedidoAluguelView -- PedidoAluguelController
+ContratoView -- ContratoController
+AutomovelView -- AutomovelController
+UsuarioView -- UsuarioController
 
 @enduml
-
 ```

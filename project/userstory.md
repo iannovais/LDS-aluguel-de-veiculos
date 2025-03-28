@@ -16,8 +16,6 @@ Registrar Automóvel: Eu, como agente, quero registrar automóvel, para que a fr
 
 Conceder Contrato de Crédito: Eu, como agente do banco, quero conceder contrato de crédito, para que os clientes possam financiar a locação do veículo de acordo com sua análise financeira.
 
-Analisar Pedido Financeiro: Eu, como agente do banco, quero analisar pedido financeiro, para que eu possa aprovar ou recusar crédito conforme critérios estabelecidos.
-
 Cancelar Pedido de Aluguel: Eu, como cliente, quero cancelar pedido de aluguel, para que eu possa desistir da locação sem penalidades.
 
 Cadastrar Renda: Eu, como cliente, quero cadastrar rendimentos, para que eu possa comprovar minha capacidade financeira para alugar um veículo.

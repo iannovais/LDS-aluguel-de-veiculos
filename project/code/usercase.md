@@ -24,8 +24,6 @@ rectangle "Sistema de Aluguel de Automóveis" {
     agente --> (Analisar pedido financeiro)
 
     banco --> (Conceder contrato de crédito)
-    banco --> (Analisar Pedido Financeiro)
-
 
     usuario <|-- cliente
     usuario <|-- agente

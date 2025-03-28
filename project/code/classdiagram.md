@@ -9,7 +9,6 @@ class Usuario {
     + void cadastrar(nome : String, senha : String)
     + void login(nome : String, senha : String)
     + void modificarPedidoAluguel (pedidoAluguel : PedidoAluguel)
-    + void registrarAutomovel(matricula : String, ano : int, marca : String, modelo : String, placa : String)
 }
 
 class Cliente extends Usuario {
@@ -29,12 +28,13 @@ class Cliente extends Usuario {
 class Agente extends Usuario {
     - cnpj : String
 
-    + void avaliarPedido()
-    + void executarContrato()
     + void analisarPedidoFinanceiro()
+    + void executarContrato()
+    + void avaliarPedidoAluguel()
+    + void vincularAutomovel(automovel : Automovel, usuario : Usuario)
+    + void registrarAutomovel(matricula : String, ano : int, marca : String, modelo : String, placa : String)
 }
 
-class Empresa extends Agente {}
 
 class Banco extends Agente {
     + void concederContratoCredito()
@@ -44,7 +44,12 @@ class PedidoAluguel {
     - Cliente cliente
     - Automovel automovel
     - Contrato contrato
-    + void modificar()
+    - Tipo : TipoPedido
+}
+
+enum TipoPedido {
+    CREDITO
+    A VISTA
 }
 
 class Automovel {
@@ -62,26 +67,15 @@ class Contrato {
     - PedidoAluguel pedido
     - Banco banco
     - boolean aprovado
+    - int valorCredito
     + void executar()
 }
 
-class SistemaAluguel {
-    - List<PedidoAluguel> pedidos
-    - List<Usuario> usuarios
-    - List<Automovel> automoveis
-    + void gerenciarPedidos()
-    + void construirPaginasWeb()
-}
-
-Cliente "1" -- "*" PedidoAluguel : realiza
-PedidoAluguel "1" -- "1" Automovel : inclui
-PedidoAluguel "1" -- "1" Contrato : gera
-Contrato "1" -- "1" Banco : concedidoPor
-Automovel "1" -- "1" Usuario : pertenceA
-SistemaAluguel "1" -- "*" PedidoAluguel : gerencia
-SistemaAluguel "1" -- "*" Usuario : registra
-SistemaAluguel "1" -- "*" Automovel : contém
+Cliente "1" -- "*" PedidoAluguel
+PedidoAluguel "1" -- "1" Automovel 
+PedidoAluguel "1" -- "1" Contrato 
+Contrato "0" -- "*" Agente
+Automovel "1" -- "1" Usuario 
 
 @enduml
-
 ```
