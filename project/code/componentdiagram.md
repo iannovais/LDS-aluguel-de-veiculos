@@ -7,9 +7,9 @@ component "Service" as Service
 component "Repository" as Repository
 component "Database" as Database
 
-Browser --> Controller : HTTP (GET/POST)
-Controller --> Service : Lógica de Negócio
-Service --> Repository : CRUD
-Repository --> Database : SQL/JDBC
+Browser ..> Controller : HTTP (GET/POST)
+Controller ..> Service : Lógica de Negócio
+Service ..> Repository : CRUD
+Repository ..> Database : SQL/JDBC
 @enduml
 ```
