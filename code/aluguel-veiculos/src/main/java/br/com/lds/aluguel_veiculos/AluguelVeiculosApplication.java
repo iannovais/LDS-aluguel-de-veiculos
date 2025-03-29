@@ -9,5 +9,14 @@ public class AluguelVeiculosApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AluguelVeiculosApplication.class, args);
 	}
-
 }
+
+
+/* 
+
+Links Importantes:
+
+- http://localhost:8080/swagger-ui/index.html
+- http://localhost:8080/clientes
+
+ */
