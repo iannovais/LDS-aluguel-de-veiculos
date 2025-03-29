@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Resposta de dados do cliente")
 public class ClienteResponse {
+    
     @Schema(description = "ID do cliente", example = "1")
     private Integer id;
     
@@ -21,6 +22,12 @@ public class ClienteResponse {
     
     @Schema(description = "Endereço completo", example = "Rua das Flores, 123 - Centro - São Paulo/SP")
     private String endereco;
+    
+    @Schema(description = "Entidades empregadoras", example = "Empresa X, Empresa Y")
+    private String entidadesEmpregadoras;
+
+    @Schema(description = "Rendimentos do cliente", example = "5000.00")
+    private String rendimentos;
 
     public Integer getId() {
         return id;
@@ -68,5 +75,21 @@ public class ClienteResponse {
 
     public void setEndereco(String endereco) {
         this.endereco = endereco;
+    }
+
+    public String getEntidadesEmpregadoras() {
+        return entidadesEmpregadoras;
+    }
+
+    public void setEntidadesEmpregadoras(String entidadesEmpregadoras) {
+        this.entidadesEmpregadoras = entidadesEmpregadoras;
+    }
+
+    public String getRendimentos() {
+        return rendimentos;
+    }
+
+    public void setRendimentos(String rendimentos) {
+        this.rendimentos = rendimentos;
     }
 }

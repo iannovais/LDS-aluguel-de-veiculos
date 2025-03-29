@@ -36,6 +36,8 @@ public class ClienteViewController {
         request.setCpf(cliente.getCpf());
         request.setProfissao(cliente.getProfissao());
         request.setEndereco(cliente.getEndereco());
+        request.setEntidadesEmpregadoras(cliente.getEntidadesEmpregadoras()); 
+        request.setRendimentos(cliente.getRendimentos()); 
         
         model.addAttribute("cliente", request);
         model.addAttribute("id", id);

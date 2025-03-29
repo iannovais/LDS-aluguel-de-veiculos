@@ -77,6 +77,8 @@ public class ClienteService {
         response.setCpf(cliente.getCpf());
         response.setProfissao(cliente.getProfissao());
         response.setEndereco(cliente.getEndereco());
+        response.setEntidadesEmpregadoras(cliente.getEntidadesEmpregadoras());
+        response.setRendimentos(cliente.getRendimentos());
         return response;
     }
 }
