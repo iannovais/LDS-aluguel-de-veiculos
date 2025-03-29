@@ -22,7 +22,6 @@ public class ClienteResponse {
     @Schema(description = "Endereço completo", example = "Rua das Flores, 123 - Centro - São Paulo/SP")
     private String endereco;
 
-    // Getters e Setters
     public Integer getId() {
         return id;
     }
