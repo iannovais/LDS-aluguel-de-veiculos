@@ -11,7 +11,6 @@ public class ClienteResponse {
     private String endereco;
     private List<RendimentoResponse> rendimentos;
 
-    // Getters e Setters
     public Integer getId() {
         return id;
     }

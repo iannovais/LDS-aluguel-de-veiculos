@@ -16,7 +16,6 @@ public class Rendimento {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    // Getters e Setters
     public Integer getId() {
         return id;
     }

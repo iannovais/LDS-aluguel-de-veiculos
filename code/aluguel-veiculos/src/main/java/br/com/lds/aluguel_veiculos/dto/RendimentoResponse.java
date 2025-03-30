@@ -7,7 +7,6 @@ public class RendimentoResponse {
     private String instituicao;
     private BigDecimal valor;
 
-    // Getters e Setters
     public Integer getId() {
         return id;
     }

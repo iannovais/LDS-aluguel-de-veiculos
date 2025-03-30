@@ -15,9 +15,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ClienteService {
-
-    private static final int MAX_RENDIMENTOS = 3;
-
     @Autowired
     private ClienteRepository clienteRepository;
 
