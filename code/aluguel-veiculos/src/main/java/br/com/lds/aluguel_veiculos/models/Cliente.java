@@ -1,9 +1,7 @@
 package br.com.lds.aluguel_veiculos.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Cliente extends Usuario {
@@ -16,9 +14,8 @@ public class Cliente extends Usuario {
     private String profissao;
     private String endereco;
     
-    private String entidadesEmpregadoras; 
-    private String rendimentos; 
-
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rendimento> rendimentos;
 
     public Integer getId() {
         return id;
@@ -60,19 +57,11 @@ public class Cliente extends Usuario {
         this.endereco = endereco;
     }
 
-    public String getEntidadesEmpregadoras() {
-        return entidadesEmpregadoras;
-    }
-
-    public void setEntidadesEmpregadoras(String entidadesEmpregadoras) {
-        this.entidadesEmpregadoras = entidadesEmpregadoras;
-    }
-
-    public String getRendimentos() {
+    public List<Rendimento> getRendimentos() {
         return rendimentos;
     }
 
-    public void setRendimentos(String rendimentos) {
+    public void setRendimentos(List<Rendimento> rendimentos) {
         this.rendimentos = rendimentos;
     }
 }

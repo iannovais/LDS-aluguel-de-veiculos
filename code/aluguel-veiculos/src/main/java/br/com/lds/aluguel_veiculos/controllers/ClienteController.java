@@ -33,8 +33,8 @@ public class ClienteController {
 
     @PostMapping
     @Operation(summary = "Cadastrar novo cliente")
-    public ClienteResponse cadastrar(@RequestBody ClienteRequest request) {
-        return clienteService.cadastrar(request);
+    public ResponseEntity<ClienteResponse> cadastrar(@RequestBody ClienteRequest request) {
+        return ResponseEntity.ok(clienteService.cadastrar(request));
     }
 
     @PutMapping("/{id}")

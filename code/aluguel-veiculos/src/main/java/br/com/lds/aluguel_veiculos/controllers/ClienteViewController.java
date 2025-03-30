@@ -2,11 +2,16 @@ package br.com.lds.aluguel_veiculos.controllers;
 
 import br.com.lds.aluguel_veiculos.dto.ClienteRequest;
 import br.com.lds.aluguel_veiculos.dto.ClienteResponse;
+import br.com.lds.aluguel_veiculos.dto.RendimentoRequest;
 import br.com.lds.aluguel_veiculos.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/clientes")
@@ -23,22 +28,34 @@ public class ClienteViewController {
 
     @GetMapping("/novo")
     public String mostrarFormularioNovoCliente(Model model) {
-        model.addAttribute("cliente", new ClienteRequest());
+        ClienteRequest request = new ClienteRequest();
+        model.addAttribute("cliente", request);
         return "clientes/formulario";
     }
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditarCliente(@PathVariable Integer id, Model model) {
-        ClienteResponse cliente = clienteService.obterPorId(id);
+        ClienteResponse response = clienteService.obterPorId(id);
         ClienteRequest request = new ClienteRequest();
-        request.setNome(cliente.getNome());
-        request.setRg(cliente.getRg());
-        request.setCpf(cliente.getCpf());
-        request.setProfissao(cliente.getProfissao());
-        request.setEndereco(cliente.getEndereco());
-        request.setEntidadesEmpregadoras(cliente.getEntidadesEmpregadoras()); 
-        request.setRendimentos(cliente.getRendimentos()); 
-        
+
+        request.setNome(response.getNome());
+        request.setRg(response.getRg());
+        request.setCpf(response.getCpf());
+        request.setProfissao(response.getProfissao());
+        request.setEndereco(response.getEndereco());
+
+        if (response.getRendimentos() != null && !response.getRendimentos().isEmpty()) {
+            List<RendimentoRequest> rendimentos = response.getRendimentos().stream()
+                    .map(r -> {
+                        RendimentoRequest rr = new RendimentoRequest();
+                        rr.setInstituicao(r.getInstituicao());
+                        rr.setValor(r.getValor());
+                        return rr;
+                    })
+                    .collect(Collectors.toList());
+            request.setRendimentos(rendimentos);
+        }
+
         model.addAttribute("cliente", request);
         model.addAttribute("id", id);
         return "clientes/formulario";

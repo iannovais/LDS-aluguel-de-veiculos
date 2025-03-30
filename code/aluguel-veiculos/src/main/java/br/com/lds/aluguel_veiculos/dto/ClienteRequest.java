@@ -1,32 +1,28 @@
 package br.com.lds.aluguel_veiculos.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 public class ClienteRequest {
-    @Schema(description = "Nome completo do cliente", example = "João da Silva")
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
     
-    @Schema(description = "Senha de acesso", example = "senha123")
+    @NotBlank(message = "Senha é obrigatória")
     private String senha;
     
-    @Schema(description = "Número do RG", example = "12.345.678-9")
+    @NotBlank(message = "RG é obrigatório")
     private String rg;
     
-    @Schema(description = "Número do CPF", example = "123.456.789-00")
+    @NotBlank(message = "CPF é obrigatório")
     private String cpf;
     
-    @Schema(description = "Profissão", example = "Engenheiro")
+    @NotBlank(message = "Profissão é obrigatória")
     private String profissao;
     
-    @Schema(description = "Endereço completo", example = "Rua das Flores, 123 - Centro - São Paulo/SP")
+    @NotBlank(message = "Endereço é obrigatório")
     private String endereco;
     
-    @Schema(description = "Entidades empregadoras separadas por vírgula", example = "Empresa A, Empresa B")
-    private String entidadesEmpregadoras;
-    
-    @Schema(description = "Rendimentos separados por vírgula", example = "5000.00,3000.50")
-    private String rendimentos;
-
+    private List<RendimentoRequest> rendimentos;
 
     public String getNome() {
         return nome;
@@ -76,19 +72,11 @@ public class ClienteRequest {
         this.endereco = endereco;
     }
 
-    public String getEntidadesEmpregadoras() {
-        return entidadesEmpregadoras;
-    }
-
-    public void setEntidadesEmpregadoras(String entidadesEmpregadoras) {
-        this.entidadesEmpregadoras = entidadesEmpregadoras;
-    }
-
-    public String getRendimentos() {
+    public List<RendimentoRequest> getRendimentos() {
         return rendimentos;
     }
 
-    public void setRendimentos(String rendimentos) {
+    public void setRendimentos(List<RendimentoRequest> rendimentos) {
         this.rendimentos = rendimentos;
     }
 }
