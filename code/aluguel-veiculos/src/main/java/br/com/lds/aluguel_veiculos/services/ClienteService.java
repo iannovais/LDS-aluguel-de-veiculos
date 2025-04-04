@@ -93,8 +93,8 @@ public class ClienteService {
                             && req.getValor() != null)
                 .count();
                 
-            if (count > 3) {
-                throw new IllegalArgumentException("Limite máximo de 3 rendimentos válidos");
+            if (count > Cliente.MAXRENDIMENTOS) {
+                throw new IllegalArgumentException("Limite máximo de " + Cliente.MAXRENDIMENTOS + " rendimentos válidos");
             }
         }
     }

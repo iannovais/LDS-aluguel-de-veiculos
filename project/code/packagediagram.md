@@ -6,11 +6,11 @@ package repositories {}
 package enumerators {}
 package views {}
 package dto {
-    package aluguel {}
-    package automovel {}
-    package cliente {}
-    package usuario {}
-    package banco {}
+    class aluguel {}
+    class automovel {}
+    class cliente {}
+    class usuario {}
+    class banco {}
 }
 
 controllers ..> configs

@@ -7,12 +7,15 @@ import java.util.List;
 public class Cliente extends Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+
+    public static final int MAXRENDIMENTOS = 3;
     
+    private Integer id;
     private String rg;
     private String cpf;
     private String profissao;
     private String endereco;
+
     
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rendimento> rendimentos;

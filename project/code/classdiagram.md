@@ -3,25 +3,26 @@
 
 abstract class Usuario {
     - id : int
-    - nome : String
-    - senha: String
+    - nome : string
+    - senha: string
 
-    + cadastrar(nome : String, senha : String) : void 
-    + login(nome : String, senha : String) : void 
+    + cadastrar(nome : string, senha : string) : void 
+    + login(nome : string, senha : string) : void 
     + modificarPedidoAluguel (pedidoAluguel : PedidoAluguel) : void 
 }
 
 class Rendimento {
     - id : int
-    - instituicao : String
+    - instituicao : string
     - valor : double
 }
 
 class Cliente extends Usuario {
-    - rg : String 
-    - cpf : String 
-    - profissao : String 
-    - endereco : String
+    + MAXRENDIMENTOS : int 
+    - rg : string 
+    - cpf : string 
+    - profissao : string 
+    - endereco : string
 
     + introduzirPedido() : void 
     + consultarPedido() : void 
@@ -29,13 +30,13 @@ class Cliente extends Usuario {
 }
 
 class Agente extends Usuario {
-    - cnpj : String
+    - cnpj : string
 
     + analisarPedidoFinanceiro() : void 
     + executarContrato() : void 
     + avaliarPedidoAluguel() : void 
     + vincularAutomovel(automovel : Automovel, usuario : Usuario) : void 
-    + registrarAutomovel(matricula : String, ano : int, marca : String, modelo : String, placa : String) : void 
+    + registrarAutomovel(matricula : string, ano : int, marca : string, modelo : string, placa : string) : void 
 }
 
 
@@ -56,14 +57,14 @@ enum TipoPedido {
 }
 
 class Automovel {
-    - matricula : String 
+    - matricula : string 
     - ano : int
-    - marca : String 
-    - modelo : String 
-    - placa : String 
+    - marca : string 
+    - modelo : string 
+    - placa : string 
     - proprietario : Usuario
 
-    + registrar(matricula : String, ano : int, marca : String, modelo : String, placa : String) : void
+    + registrar(matricula : string, ano : int, marca : string, modelo : string, placa : string) : void
 }
 
 class Contrato {
