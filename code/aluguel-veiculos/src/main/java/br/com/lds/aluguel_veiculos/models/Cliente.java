@@ -1,7 +1,7 @@
 package br.com.lds.aluguel_veiculos.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import java.util.List;
 
 @Data

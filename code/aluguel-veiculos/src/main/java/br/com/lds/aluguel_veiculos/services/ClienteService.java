@@ -44,12 +44,9 @@ public class ClienteService {
         clienteExistente.setProfissao(clienteAtualizado.getProfissao());
         clienteExistente.setEndereco(clienteAtualizado.getEndereco());
 
-        // Atualiza a coleção de rendimentos corretamente
         if (clienteAtualizado.getRendimentos() != null) {
-            // Limpa a coleção existente
             clienteExistente.getRendimentos().clear();
-            
-            // Adiciona os novos rendimentos
+
             for (Rendimento rendimento : clienteAtualizado.getRendimentos()) {
                 rendimento.setCliente(clienteExistente);
                 clienteExistente.getRendimentos().add(rendimento);

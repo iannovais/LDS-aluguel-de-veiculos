@@ -4,7 +4,7 @@ import br.com.lds.aluguel_veiculos.models.Cliente;
 import br.com.lds.aluguel_veiculos.services.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
