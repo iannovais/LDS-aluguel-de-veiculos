@@ -1,80 +1,64 @@
 package br.com.lds.aluguel_veiculos.services;
 
-import br.com.lds.aluguel_veiculos.dto.*;
 import br.com.lds.aluguel_veiculos.exceptions.ResourceNotFoundException;
 import br.com.lds.aluguel_veiculos.models.Cliente;
 import br.com.lds.aluguel_veiculos.models.Rendimento;
 import br.com.lds.aluguel_veiculos.repositories.ClienteRepository;
 import br.com.lds.aluguel_veiculos.repositories.RendimentoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ClienteService {
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+    private final RendimentoRepository rendimentoRepository;
 
-    @Autowired
-    private RendimentoRepository rendimentoRepository;
-
-    public List<ClienteResponse> listarTodos() {
-        return clienteRepository.findAll().stream()
-                .map(this::convertToResponse)
-                .collect(Collectors.toList());
+    public List<Cliente> listarTodos() {
+        return clienteRepository.findAll();
     }
 
-    public ClienteResponse obterPorId(Integer id) {
-        Cliente cliente = clienteRepository.findById(id)
+    public Cliente obterPorId(Integer id) {
+        return clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
-        return convertToResponse(cliente);
     }
 
     @Transactional
-    public ClienteResponse cadastrar(ClienteRequest request) {
-        Cliente cliente = new Cliente();
-        cliente.setNome(request.getNome());
-        cliente.setSenha(request.getSenha());
-        cliente.setRg(request.getRg());
-        cliente.setCpf(request.getCpf());
-        cliente.setProfissao(request.getProfissao());
-        cliente.setEndereco(request.getEndereco());
-
-        Cliente clienteSalvo = clienteRepository.save(cliente);
-
-        if (request.getRendimentos() != null && !request.getRendimentos().isEmpty()) {
-            validarRendimentos(request.getRendimentos()); 
-            salvarRendimentos(clienteSalvo, request.getRendimentos());
-        }
-
-        return convertToResponse(clienteSalvo);
+    public Cliente cadastrar(Cliente cliente) {
+        validarRendimentos(cliente.getRendimentos());
+        return clienteRepository.save(cliente);
     }
 
     @Transactional
-    public ClienteResponse atualizar(Integer id, ClienteRequest request) {
-        validarRendimentos(request.getRendimentos());
-
-        Cliente cliente = clienteRepository.findById(id)
+    public Cliente atualizar(Integer id, Cliente clienteAtualizado) {
+        Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
-        cliente.setNome(request.getNome());
-        cliente.setSenha(request.getSenha());
-        cliente.setRg(request.getRg());
-        cliente.setCpf(request.getCpf());
-        cliente.setProfissao(request.getProfissao());
-        cliente.setEndereco(request.getEndereco());
+        clienteExistente.setNome(clienteAtualizado.getNome());
+        clienteExistente.setSenha(clienteAtualizado.getSenha());
+        clienteExistente.setRg(clienteAtualizado.getRg());
+        clienteExistente.setCpf(clienteAtualizado.getCpf());
+        clienteExistente.setProfissao(clienteAtualizado.getProfissao());
+        clienteExistente.setEndereco(clienteAtualizado.getEndereco());
 
-        rendimentoRepository.deleteByClienteId(cliente.getId());
-
-        if (request.getRendimentos() != null) {
-            salvarRendimentos(cliente, request.getRendimentos());
+        // Atualiza a coleção de rendimentos corretamente
+        if (clienteAtualizado.getRendimentos() != null) {
+            // Limpa a coleção existente
+            clienteExistente.getRendimentos().clear();
+            
+            // Adiciona os novos rendimentos
+            for (Rendimento rendimento : clienteAtualizado.getRendimentos()) {
+                rendimento.setCliente(clienteExistente);
+                clienteExistente.getRendimentos().add(rendimento);
+            }
+        } else {
+            clienteExistente.getRendimentos().clear();
         }
 
-        Cliente updated = clienteRepository.save(cliente);
-        return convertToResponse(updated);
+        return clienteRepository.save(clienteExistente);
     }
 
     @Transactional
@@ -86,61 +70,9 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
-    private void validarRendimentos(List<RendimentoRequest> rendimentos) {
-        if (rendimentos != null) {
-            long count = rendimentos.stream()
-                .filter(req -> req.getInstituicao() != null && !req.getInstituicao().isEmpty() 
-                            && req.getValor() != null)
-                .count();
-                
-            if (count > Cliente.MAXRENDIMENTOS) {
-                throw new IllegalArgumentException("Limite máximo de " + Cliente.MAXRENDIMENTOS + " rendimentos válidos");
-            }
+    private void validarRendimentos(List<Rendimento> rendimentos) {
+        if (rendimentos != null && rendimentos.size() > Cliente.MAX_RENDIMENTOS) {
+            throw new IllegalArgumentException("Limite máximo de " + Cliente.MAX_RENDIMENTOS + " rendimentos");
         }
-    }
-
-    private void salvarRendimentos(Cliente cliente, List<RendimentoRequest> rendimentosRequests) {
-        if (rendimentosRequests == null) {
-            return;
-        }
-    
-        List<Rendimento> rendimentos = rendimentosRequests.stream()
-                .filter(req -> req.getInstituicao() != null && !req.getInstituicao().isEmpty() && req.getValor() != null)
-                .map(req -> {
-                    Rendimento rendimento = new Rendimento();
-                    rendimento.setInstituicao(req.getInstituicao());
-                    rendimento.setValor(req.getValor());
-                    rendimento.setCliente(cliente);
-                    return rendimento;
-                })
-                .collect(Collectors.toList());
-    
-        rendimentoRepository.saveAll(rendimentos);
-    }
-
-    private ClienteResponse convertToResponse(Cliente cliente) {
-        ClienteResponse response = new ClienteResponse();
-        response.setId(cliente.getId());
-        response.setNome(cliente.getNome());
-        response.setRg(cliente.getRg());
-        response.setCpf(cliente.getCpf());
-        response.setProfissao(cliente.getProfissao());
-        response.setEndereco(cliente.getEndereco());
-
-        if (cliente.getRendimentos() != null) {
-            response.setRendimentos(cliente.getRendimentos().stream()
-                    .map(this::convertToRendimentoResponse)
-                    .collect(Collectors.toList()));
-        }
-
-        return response;
-    }
-
-    private RendimentoResponse convertToRendimentoResponse(Rendimento rendimento) {
-        RendimentoResponse response = new RendimentoResponse();
-        response.setId(rendimento.getId());
-        response.setInstituicao(rendimento.getInstituicao());
-        response.setValor(rendimento.getValor());
-        return response;
     }
 }
