@@ -28,10 +28,24 @@
                 </a>
             </div>
         </div>
-    </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Solicitar Aluguel</h5>
+                <select id="tipoPagamento" class="form-select mb-3">
+                    <option value="A_VISTA">Pagamento à Vista</option>
+                    <option value="CREDITO">Crédito</option>
+                </select>
+                <button id="solicitarBtn" class="btn btn-success">Solicitar Agora</button>
+            </div>
+        </div>
+        <!-- Fim da parte nova -->
+
+    </div> <!-- Fecha container -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Seu código original
         let clienteId = null;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -49,6 +63,26 @@
             localStorage.removeItem('clienteId');
             window.location.href = 'login.html';
         }
+
+        // Adicione APENAS ESSE NOVO CÓDIGO
+        document.getElementById('solicitarBtn').addEventListener('click', () => {
+            const tipo = document.getElementById('tipoPagamento').value;
+
+            fetch('/api/pedidos-aluguel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    clienteId: Number(clienteId), 
+                    tipo: tipo 
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao solicitar');
+                alert('Pedido criado com sucesso!');
+                window.location.reload();
+            })
+            .catch(error => alert(error.message));
+        });
     </script>
 </body>
 </html>
