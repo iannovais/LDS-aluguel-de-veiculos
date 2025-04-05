@@ -19,7 +19,7 @@ component "Database" as Database {
     component "PedidoAluguel" as pedido
 }
 
-Browser --> Backend
+Browser --> Backend : HTTPS
 Backend --> Database
 @enduml
 ```

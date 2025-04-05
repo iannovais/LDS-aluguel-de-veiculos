@@ -5,6 +5,8 @@ import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +35,7 @@ public class Automovel {
     
     @ManyToOne
     @JoinColumn(name = "proprietario_id", nullable = false)
+    @JsonIgnore 
     private Cliente proprietario;
 
     @OneToMany(mappedBy = "automovel", cascade = CascadeType.ALL, orphanRemoval = true)

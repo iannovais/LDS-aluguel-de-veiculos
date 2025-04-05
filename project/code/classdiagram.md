@@ -18,7 +18,7 @@ class Rendimento {
 }
 
 class Cliente extends Usuario {
-    + MAXRENDIMENTOS : int 
+    + MAXRENDIMENTOS : int = 3
     - rg : string 
     - cpf : string 
     - profissao : string 
