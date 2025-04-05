@@ -151,7 +151,7 @@
             rendimentoCounter = rendimentosVisiveis.length;
             
             if (rendimentoCounter >= 3) {
-                alert('Limite máximo de 3 rendimentos atingido');
+                alert('⚠️ Limite máximo de 3 rendimentos atingido');
                 return;
             }
     
@@ -210,7 +210,7 @@
                             valor: parseFloat(valor)
                         });
                     } else if (instituicao || valor) {
-                        alert('Preencha ambos instituição e valor para cada rendimento');
+                        alert('⚠️ Preencha ambos instituição e valor para cada rendimento');
                         return;
                     }
                 }
@@ -239,14 +239,14 @@
                 });
     
                 if (response.ok) {
-                    alert('Perfil atualizado com sucesso!');
+                    alert('✅ Perfil atualizado com sucesso!');
                     window.location.href = 'perfil.html';
                 } else {
                     const error = await response.json();
-                    alert(error.message || 'Erro ao atualizar perfil');
+                    alert(error.message || '⚠️ Erro ao atualizar perfil');
                 }
             } catch (error) {
-                alert('Erro ao conectar com o servidor');
+                alert('⚠️ Erro ao conectar com o servidor');
                 console.error(error);
             } finally {
                 const submitBtn = e.target.querySelector('button[type="submit"]');

@@ -20,12 +20,12 @@ public class PedidoAluguel {
     
     @ManyToOne
     @JoinColumn(name = "automovel_id")
-    @JsonIgnoreProperties("pedidos") // Quebra o ciclo
+    @JsonIgnoreProperties("pedidos") 
     private Automovel automovel;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
-    @JsonIgnoreProperties({"pedidos", "automoveis"}) // Ajuste conforme necessidade
+    @JsonIgnoreProperties({"pedidos", "automoveis"}) 
     private Cliente cliente;
     
     @Enumerated(EnumType.STRING)

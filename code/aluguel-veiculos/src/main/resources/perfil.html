@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Meu Perfil</title>
@@ -9,42 +10,51 @@
         body {
             background-color: #f8f9fa;
         }
+
         .profile-header {
             background-color: #e9ecef;
             padding: 20px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
+
         .card-aluguel {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
         }
-        .card-aluguel:hover {
-            transform: translateY(-2px);
-        }
+
         .input-group-text {
             cursor: pointer;
         }
-    .status-pedido {
-        font-size: 0.9em;
-        padding: 5px 10px;
-        border-radius: 15px;
-    }
-    .aprovado {
-        background-color: #d4edda;
-        color: #155724;
-    }
-    .pendente {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-    .recusado {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-</style>
+
+        .status-pedido {
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 10px;
+            max-height: 30px;
+            border-radius: 5px;
+        }
+
+        .aguardando {
+            background-color: #fcca28;
+            color: #000000;
+        }
+
+        .pendente {
+            background-color: #fcca28;
+            color: #000000;
+        }
+
+        .recusado {
+            background-color: #e93030;
+            color: #ffffff;
+        }
+    </style>
     </style>
 </head>
+
 <body>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -73,7 +83,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label class="form-label">Forma de Pagamento:</label>
                     <select id="tipoPagamento" class="form-select">
@@ -81,36 +91,34 @@
                         <option value="CREDITO">Crédito</option>
                     </select>
                 </div>
-                
+
                 <button id="solicitarBtn" class="btn btn-success w-100">
                     <i class="fas fa-check-circle"></i> Confirmar Aluguel
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- Adicione esta seção após a div do novo aluguel -->
-<div class="card card-aluguel mb-4">
-    <div class="card-header bg-info text-white">
-        <h5 class="card-title mb-0"><i class="fas fa-history"></i> Meus Pedidos de Aluguel</h5>
-    </div>
-    <div class="card-body">
-        <div id="listaPedidos" class="list-group">
-            <!-- Os pedidos serão carregados aqui -->
-            <div class="text-center py-3">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Carregando...</span>
+        <div class="card card-aluguel mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-history"></i> Meus Pedidos de Aluguel</h5>
+            </div>
+            <div class="card-body">
+                <div id="listaPedidos" class="list-group">
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let clienteId = null;
-        let veiculosCarregados = []; // Armazena todos os veículos carregados
-        let veiculoSelecionadoId = null; // Armazena o ID do veículo selecionado
+        let veiculosCarregados = [];
+        let veiculoSelecionadoId = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             clienteId = localStorage.getItem('clienteId');
@@ -134,140 +142,139 @@
         }
 
         function carregarTodosVeiculos() {
-    const select = document.getElementById('veiculosDisponiveis');
-    select.disabled = true;
-    select.innerHTML = '<option value="">Carregando...</option>';
+            const select = document.getElementById('veiculosDisponiveis');
+            select.disabled = true;
+            select.innerHTML = '<option value="">Carregando...</option>';
 
-    fetch('/api/automoveis')
-        .then(response => {
-            if (!response.ok) throw new Error(`Erro ${response.status}`);
-            return response.json();
-        })
-        .then(veiculos => {
-            veiculosCarregados = veiculos;
-            atualizarListaVeiculosDisponiveis(); // Chama a função correta
-        })
-        .catch(error => {
-            console.error('Falha:', error);
-            select.innerHTML = `<option value="">Erro: ${error.message}</option>`;
-        })
-        .finally(() => {
-            select.disabled = false;
+            fetch('/api/automoveis')
+                .then(response => {
+                    if (!response.ok) throw new Error(`Erro ${response.status}`);
+                    return response.json();
+                })
+                .then(veiculos => {
+                    veiculosCarregados = veiculos;
+                    atualizarListaVeiculosDisponiveis();
+                })
+                .catch(error => {
+                    console.error('Falha:', error);
+                    select.innerHTML = `<option value="">Erro: ${error.message}</option>`;
+                })
+                .finally(() => {
+                    select.disabled = false;
+                });
+        }
+
+        document.getElementById('veiculosDisponiveis').addEventListener('change', function () {
+            veiculoSelecionadoId = this.value;
+            document.getElementById('solicitarBtn').disabled = !this.value;
         });
-}
 
-document.getElementById('veiculosDisponiveis').addEventListener('change', function() {
-    veiculoSelecionadoId = this.value;
-    document.getElementById('solicitarBtn').disabled = !this.value;
-});
+        function atualizarListaVeiculosDisponiveis() {
+            const select = document.getElementById('veiculosDisponiveis');
+            const veiculoAnterior = veiculoSelecionadoId;
 
-function atualizarListaVeiculosDisponiveis() {
-    const select = document.getElementById('veiculosDisponiveis');
-    const veiculoAnterior = veiculoSelecionadoId; // Armazena seleção anterior
+            select.innerHTML = '<option value="">Selecione um veículo</option>';
 
-    // Reset seguro do select
-    select.innerHTML = '<option value="">Selecione um veículo</option>';
-    
-    if (veiculosCarregados.length === 0) {
-        select.innerHTML += '<option value="">Nenhum veículo cadastrado</option>';
-        document.getElementById('solicitarBtn').disabled = true;
-        return;
-    }
-
-    fetch('/api/pedidos-aluguel')
-        .then(response => {
-            if (!response.ok) throw new Error('Erro ao verificar pedidos');
-            return response.json();
-        })
-        .then(pedidos => {
-            const veiculosAlugados = pedidos.map(p => p.automovel?.id).filter(Boolean);
-            
-            // Filtra veículos disponíveis
-            const disponiveis = veiculosCarregados.filter(v => {
-                const isProprietario = v.proprietario?.id?.toString() === clienteId;
-                const isAlugado = veiculosAlugados.includes(v.id);
-                return !isProprietario && !isAlugado;
-            });
-
-            // Preenche opções
-            disponiveis.forEach(veiculo => {
-                const option = new Option(
-                    `${veiculo.marca} ${veiculo.modelo} • ${veiculo.placa}`,
-                    veiculo.id
-                );
-                select.add(option);
-            });
-
-            // Restaura seleção apenas se ainda válida
-            if (veiculoAnterior && disponiveis.some(v => v.id == veiculoAnterior)) {
-                select.value = veiculoAnterior;
-            }
-
-            // Força seleção manual
-            if (disponiveis.length > 0 && !select.value) {
-                select.selectedIndex = 0; // Remove esta linha para seleção totalmente manual
-                document.getElementById('solicitarBtn').disabled = true; // Mantém botão desabilitado
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            select.innerHTML = '<option value="">Erro ao carregar veículos</option>';
-        })
-        .finally(() => {
-            document.getElementById('solicitarBtn').disabled = !select.value;
-        });
-}
-
-function atualizarListaVeiculos(disponiveis) {
-    const select = document.getElementById('veiculosDisponiveis');
-    select.innerHTML = '';
-    
-    if (disponiveis.length === 0) {
-        select.innerHTML = '<option value="">Nenhum veículo disponível</option>';
-        document.getElementById('solicitarBtn').disabled = true;
-        return;
-    }
-
-    // Adiciona todas as opções
-    disponiveis.forEach(veiculo => {
-        const option = document.createElement('option');
-        option.value = veiculo.id;
-        option.textContent = `${veiculo.marca} ${veiculo.modelo} • ${veiculo.placa}`;
-        select.appendChild(option);
-    });
-
-    document.getElementById('solicitarBtn').disabled = false;
-}
-
-function carregarPedidosUsuario() {
-    const lista = document.getElementById('listaPedidos');
-    lista.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
-
-    fetch('/api/pedidos-aluguel')
-        .then(response => response.json())
-        .then(pedidos => {
-            const meusPedidos = pedidos.filter(p => p.cliente.id == clienteId);
-            
-            if (meusPedidos.length === 0) {
-                lista.innerHTML = '<div class="text-muted text-center py-3">Nenhum pedido encontrado</div>';
+            if (veiculosCarregados.length === 0) {
+                select.innerHTML += '<option value="">Nenhum veículo cadastrado</option>';
+                document.getElementById('solicitarBtn').disabled = true;
                 return;
             }
 
-            lista.innerHTML = '';
-            meusPedidos.forEach(pedido => {
-                // Lógica modificada para status automático
-                let contratoStatus;
-                if (pedido.tipo === 'A_VISTA') {
-                    contratoStatus = 'Aprovado'; 
-                } else {
-                    contratoStatus = pedido.contrato 
-                        ? (pedido.contrato.aprovado ? 'Aprovado' : 'Recusado') 
-                        : 'Pendente';
-                }
+            fetch('/api/pedidos-aluguel')
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao verificar pedidos');
+                    return response.json();
+                })
+                .then(pedidos => {
+                    const clienteIdNum = Number(clienteId);
 
-                const item = document.createElement('div');
-                item.className = 'list-group-item list-group-item-action';
-                item.innerHTML = `
+                    const veiculosAlugados = pedidos
+                        .filter(p => p.contrato?.aprovado !== false)
+                        .map(p => p.automovel?.id)
+                        .filter(Boolean);
+
+                    const disponiveis = veiculosCarregados.filter(v => {
+                        if (Number(v.proprietarioId) === clienteIdNum) {
+                            return false;
+                        }
+
+                        return !veiculosAlugados.includes(v.id);
+                    });
+
+                    disponiveis.forEach(veiculo => {
+                        const option = new Option(
+                            `${veiculo.marca} ${veiculo.modelo} • ${veiculo.placa}`,
+                            veiculo.id
+                        );
+                        select.add(option);
+                    });
+
+                    if (veiculoAnterior && disponiveis.some(v => v.id == veiculoAnterior)) {
+                        select.value = veiculoAnterior;
+                    }
+
+                    document.getElementById('solicitarBtn').disabled = disponiveis.length === 0 || !select.value;
+
+                    if (disponiveis.length === 0) {
+                        select.innerHTML = '<option value="">Nenhum veículo disponível</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    select.innerHTML = '<option value="">Erro ao carregar veículos</option>';
+                    document.getElementById('solicitarBtn').disabled = true;
+                });
+        }
+
+        function atualizarListaVeiculos(disponiveis) {
+            const select = document.getElementById('veiculosDisponiveis');
+            select.innerHTML = '';
+
+            if (disponiveis.length === 0) {
+                select.innerHTML = '<option value="">Nenhum veículo disponível</option>';
+                document.getElementById('solicitarBtn').disabled = true;
+                return;
+            }
+
+            disponiveis.forEach(veiculo => {
+                const option = document.createElement('option');
+                option.value = veiculo.id;
+                option.textContent = `${veiculo.marca} ${veiculo.modelo} • ${veiculo.placa}`;
+                select.appendChild(option);
+            });
+
+            document.getElementById('solicitarBtn').disabled = false;
+        }
+
+        function carregarPedidosUsuario() {
+            const lista = document.getElementById('listaPedidos');
+            lista.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
+
+            fetch('/api/pedidos-aluguel')
+                .then(response => response.json())
+                .then(pedidos => {
+                    const meusPedidos = pedidos.filter(p => p.cliente.id == clienteId);
+
+                    if (meusPedidos.length === 0) {
+                        lista.innerHTML = '<div class="text-muted text-center py-3">Nenhum pedido encontrado</div>';
+                        return;
+                    }
+
+                    lista.innerHTML = '';
+                    meusPedidos.forEach(pedido => {
+                        let contratoStatus;
+                        if (pedido.tipo === 'A_VISTA') {
+                            contratoStatus = 'Aguardando execução';
+                        } else {
+                            contratoStatus = pedido.contrato
+                                ? (pedido.contrato.aprovado ? 'Aguardando execução' : 'Recusado')
+                                : 'Pendente';
+                        }
+
+                        const item = document.createElement('div');
+                        item.className = 'list-group-item list-group-item-action';
+                        item.innerHTML = `
                     <div class="d-flex w-100 justify-content-between">
                         <div>
                             <h6 class="mb-1">${pedido.automovel.marca} ${pedido.automovel.modelo}</h6>
@@ -279,131 +286,70 @@ function carregarPedidosUsuario() {
                     </div>
                     <div class="mt-2">
                         <small>Tipo: ${pedido.tipo === 'A_VISTA' ? 'À Vista' : 'Crédito'}</small>
-                        ${pedido.contrato && pedido.contrato.valorCredito ? 
-                            `<br><small>Valor Crédito: R$ ${pedido.contrato.valorCredito.toFixed(2)}</small>` : ''}
+                        ${pedido.contrato && pedido.contrato.valorCredito ?
+                                `<br><small>Valor Crédito: R$ ${pedido.contrato.valorCredito.toFixed(2)}</small>` : ''}
                     </div>
                 `;
-                lista.appendChild(item);
-            });
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            lista.innerHTML = '<div class="text-danger text-center py-3">Erro ao carregar pedidos</div>';
-        });
-}
-
-        function atualizarListaVeiculosDisponiveis() {
-            const select = document.getElementById('veiculosDisponiveis');
-            const veiculoAtual = select.value;
-            
-            // Primeiro carrega todos os veículos
-            select.innerHTML = '<option value="">Selecione um veículo</option>';
-            
-            if (veiculosCarregados.length === 0) {
-                select.innerHTML = '<option value="">Nenhum veículo disponível</option>';
-                document.getElementById('solicitarBtn').disabled = true;
-                return;
-            }
-
-            // Depois verifica quais já foram alugados
-            fetch('/api/pedidos-aluguel')
-                .then(response => {
-                    if (!response.ok) throw new Error('Erro ao verificar pedidos');
-                    return response.json();
-                })
-                .then(pedidos => {
-                    const veiculosAlugados = pedidos.map(p => p.automovel.id);
-                    
-                    // Filtra os veículos disponíveis
-                    const disponiveis = veiculosCarregados.filter(
-                        v => !veiculosAlugados.includes(v.id)
-                    );
-
-                    if (disponiveis.length === 0) {
-                        select.innerHTML = '<option value="">Nenhum veículo disponível</option>';
-                        document.getElementById('solicitarBtn').disabled = true;
-                        return;
-                    }
-
-                    // Preenche o select com os disponíveis
-                    disponiveis.forEach(veiculo => {
-                        const option = document.createElement('option');
-                        option.value = veiculo.id;
-                        option.textContent = `${veiculo.marca} ${veiculo.modelo} • ${veiculo.ano} • ${veiculo.placa}`;
-                        select.appendChild(option);
+                        lista.appendChild(item);
                     });
-
-                    // Mantém o veículo selecionado se ainda estiver disponível
-                    if (veiculoAtual && disponiveis.some(v => v.id == veiculoAtual)) {
-                        select.value = veiculoAtual;
-                    }
-
-                    document.getElementById('solicitarBtn').disabled = false;
                 })
                 .catch(error => {
-                    console.error('Erro ao verificar pedidos:', error);
-                    // Se der erro, mostra todos os veículos mesmo (fallback)
-                    veiculosCarregados.forEach(veiculo => {
-                        const option = document.createElement('option');
-                        option.value = veiculo.id;
-                        option.textContent = `${veiculo.marca} ${veiculo.modelo} • ${veiculo.ano} • ${veiculo.placa}`;
-                        select.appendChild(option);
-                    });
-                    document.getElementById('solicitarBtn').disabled = false;
+                    console.error('Erro:', error);
+                    lista.innerHTML = '<div class="text-danger text-center py-3">Erro ao carregar pedidos</div>';
                 });
         }
 
-function criarPedidoAluguel() {
-    const veiculoId = document.getElementById('veiculosDisponiveis').value;
-    const tipoPagamento = document.getElementById('tipoPagamento').value;
+        function criarPedidoAluguel() {
+            const veiculoId = document.getElementById('veiculosDisponiveis').value;
+            const tipoPagamento = document.getElementById('tipoPagamento').value;
 
-    if (!veiculoId) {
-        alert('❌ Selecione um veículo antes de confirmar!');
-        return;
-    }
+            if (!veiculoId) {
+                alert('❌ Selecione um veículo antes de confirmar!');
+                return;
+            }
 
-    veiculoSelecionadoId = veiculoId;
+            veiculoSelecionadoId = veiculoId;
 
-    const pedidoData = {
-        cliente: { id: Number(clienteId) },
-        automovel: { id: Number(veiculoId) },
-        tipo: tipoPagamento
-    };
+            const pedidoData = {
+                cliente: { id: Number(clienteId) },
+                automovel: { id: Number(veiculoId) },
+                tipo: tipoPagamento
+            };
 
-    const btn = document.getElementById('solicitarBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+            const btn = document.getElementById('solicitarBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
 
-    fetch('/api/pedidos-aluguel', {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(pedidoData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => { throw new Error(text) });
+            fetch('/api/pedidos-aluguel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(pedidoData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('✅ Aluguel confirmado com sucesso!');
+                    carregarPedidosUsuario();
+                    veiculosCarregados = veiculosCarregados.filter(v => v.id != veiculoSelecionadoId);
+                    atualizarListaVeiculosDisponiveis();
+                    document.getElementById('tipoPagamento').value = 'A_VISTA';
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert(`⚠️ Erro ao criar pedido: ${error.message}`);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar Aluguel';
+                });
         }
-        return response.json();
-    })
-    .then(data => {
-        alert('✅ Aluguel confirmado com sucesso!');
-        // Atualiza ambas as listas
-        carregarPedidosUsuario(); // Nova linha adicionada
-        veiculosCarregados = veiculosCarregados.filter(v => v.id != veiculoSelecionadoId);
-        atualizarListaVeiculosDisponiveis();
-        document.getElementById('tipoPagamento').value = 'A_VISTA';
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        alert(`⚠️ Erro ao criar pedido: ${error.message}`);
-    })
-    .finally(() => {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar Aluguel';
-    });
-}
     </script>
 </body>
+
 </html>

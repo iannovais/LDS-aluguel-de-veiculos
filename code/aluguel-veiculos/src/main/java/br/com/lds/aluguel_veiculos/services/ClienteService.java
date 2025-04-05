@@ -3,9 +3,7 @@ package br.com.lds.aluguel_veiculos.services;
 import br.com.lds.aluguel_veiculos.exceptions.ResourceNotFoundException;
 import br.com.lds.aluguel_veiculos.models.Cliente;
 import br.com.lds.aluguel_veiculos.models.Rendimento;
-import br.com.lds.aluguel_veiculos.repositories.AutomovelRepository;
 import br.com.lds.aluguel_veiculos.repositories.ClienteRepository;
-import br.com.lds.aluguel_veiculos.repositories.RendimentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +15,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClienteService {
     private final ClienteRepository clienteRepository;
-    private final RendimentoRepository rendimentoRepository;
-    private final AutomovelRepository automovelRepository;
 
     public List<Cliente> listarTodos() {
         return clienteRepository.findAll();

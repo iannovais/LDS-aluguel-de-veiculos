@@ -55,7 +55,7 @@ public class AutomovelService {
         return automovelRepository.save(automovelExistente);
     }
 
-@Transactional
+    @Transactional
     public void excluir(Integer id) {
         Automovel automovel = automovelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Automóvel não encontrado"));

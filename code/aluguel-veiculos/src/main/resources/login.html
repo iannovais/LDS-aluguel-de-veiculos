@@ -68,10 +68,10 @@
                     localStorage.setItem('clienteId', clienteId);
                     window.location.href = 'perfil.html';
                 } else {
-                    alert('CPF ou senha incorretos!');
+                    alert('❌ CPF ou senha incorretos!');
                 }
             } catch (error) {
-                alert('Erro ao conectar com o servidor');
+                alert('⚠️ Erro ao conectar com o servidor');
             } finally {
                 submitBtn.disabled = false;
                 loginText.classList.remove('d-none');

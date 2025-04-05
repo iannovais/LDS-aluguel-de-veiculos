@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,6 @@ public PedidoAluguel criarPedidoCompleto(PedidoAluguel pedido) {
     pedido.setCliente(cliente);
     pedido.setAutomovel(automovel);
 
-    // Cria contrato automático para pagamento à vista
     if (pedido.getTipo() == TipoPedido.A_VISTA) {
         Contrato contrato = new Contrato();
         contrato.setAprovado(true);
@@ -54,7 +54,17 @@ public PedidoAluguel criarPedidoCompleto(PedidoAluguel pedido) {
     }
 
     public PedidoAluguel save(PedidoAluguel pedido) {
-        return pedidoRepository.save(pedido); 
+        Automovel automovel = automovelRepository.findById(pedido.getAutomovel().getId())
+            .orElseThrow(() -> new RuntimeException("Automóvel não encontrado"));
+        
+        Cliente cliente = clienteRepository.findById(pedido.getCliente().getId())
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        
+        pedido.setAutomovel(automovel);
+        pedido.setCliente(cliente);
+        
+        validarPedido(pedido);
+        return pedidoRepository.save(pedido);
     }
 
     @Transactional
@@ -63,5 +73,22 @@ public PedidoAluguel criarPedidoCompleto(PedidoAluguel pedido) {
             .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
         
         pedidoRepository.delete(pedido);
+    }
+
+    private void validarPedido(PedidoAluguel pedido) {
+        Objects.requireNonNull(pedido, "Pedido não pode ser nulo");
+        Objects.requireNonNull(pedido.getAutomovel(), "Automóvel não pode ser nulo");
+        Objects.requireNonNull(pedido.getCliente(), "Cliente não pode ser nulo");
+        
+        Automovel automovel = pedido.getAutomovel();
+        Cliente cliente = pedido.getCliente();
+        
+        if (automovel.getProprietario() == null) {
+            throw new IllegalStateException("Automóvel ID " + automovel.getId() + " não tem proprietário cadastrado");
+        }
+        
+        if (automovel.getProprietario().getId().equals(cliente.getId())) {
+            throw new IllegalArgumentException("Cliente não pode alugar seu próprio veículo");
+        }
     }
 }

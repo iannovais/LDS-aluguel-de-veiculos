@@ -113,7 +113,7 @@
             rendimentoCounter = rendimentosVisiveis.length;
             
             if (rendimentoCounter > 3) {
-                alert('Limite máximo de 3 rendimentos atingido');
+                alert('❌ Limite máximo de 3 rendimentos atingido');
                 return;
             }
     
@@ -170,7 +170,7 @@
                             valor: parseFloat(valor)
                         });
                     } else if (instituicao || valor) {
-                        alert('Preencha ambos instituição e valor para cada rendimento');
+                        alert('⚠️ Preencha ambos instituição e valor para cada rendimento');
                         return;
                     }
                 }
@@ -200,14 +200,14 @@
                 });
     
                 if (response.ok) {
-                    alert('Cadastro realizado com sucesso!');
+                    alert('✅ Cadastro realizado com sucesso!');
                     window.location.href = '/login.html';
                 } else {
                     const error = await response.json();
-                    alert(error.message || 'Erro ao cadastrar');
+                    alert(error.message || '⚠️ Erro ao cadastrar');
                 }
             } catch (error) {
-                alert('Erro ao conectar com o servidor');
+                alert('⚠️ Erro ao conectar com o servidor');
             } finally {
                 const submitBtn = e.target.querySelector('button[type="submit"]');
                 if (submitBtn) {
