@@ -22,6 +22,16 @@
             border-radius: 5px;
             border: 1px solid #dee2e6;
         }
+        .veiculo-card {
+            transition: transform 0.2s;
+        }
+        .veiculo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .actions-column {
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -33,25 +43,299 @@
                 <a id="editarPerfilBtn" href="#" class="btn btn-primary">
                     <i class="fas fa-edit"></i> Editar Perfil
                 </a>
+                <button id="novoVeiculoBtn" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Novo Veículo
+                </button>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Meus Veículos</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="veiculosTable">
+                        <thead>
+                            <tr>
+                                <th>Modelo</th>
+                                <th>Marca</th>
+                                <th>Ano</th>
+                                <th>Placa</th>
+                                <th>Matrícula</th>
+                                <th>Proprietário</th>
+                                <th class="actions-column">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="veiculosTableBody">
+                            <!-- Veículos serão carregados aqui via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal para cadastro/edição de veículos -->
+    <div class="modal fade" id="veiculoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Adicionar Veículo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="veiculoForm">
+                        <input type="hidden" id="veiculoId">
+                        <div class="mb-3">
+                            <label for="matricula" class="form-label">Matrícula</label>
+                            <input type="text" class="form-control" id="matricula" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ano" class="form-label">Ano</label>
+                            <input type="number" class="form-control" id="ano" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="marca" class="form-label">Marca</label>
+                            <input type="text" class="form-control" id="marca" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modelo" class="form-label">Modelo</label>
+                            <input type="text" class="form-control" id="modelo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="placa" class="form-label">Placa</label>
+                            <input type="text" class="form-control" id="placa" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="salvarVeiculoBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação para exclusão -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir este veículo?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Variáveis globais
+        let clienteId = null;
+        let veiculos = [];
+        let veiculoModal = null;
+        let confirmDeleteModal = null;
+        let veiculoParaExcluir = null;
+
         document.addEventListener('DOMContentLoaded', async () => {
-            const clienteId = localStorage.getItem('clienteId');
+            // Inicializar modais
+            veiculoModal = new bootstrap.Modal(document.getElementById('veiculoModal'));
+            confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+
+            // Verificar autenticação
+            clienteId = localStorage.getItem('clienteId');
             if (!clienteId) {
                 window.location.href = 'login.html';
                 return;
             }
 
+            // Configurar links/buttons
             document.getElementById('editarPerfilBtn').href = `editar-perfil.html?id=${clienteId}`;
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('novoVeiculoBtn').addEventListener('click', mostrarModalNovoVeiculo);
+            document.getElementById('salvarVeiculoBtn').addEventListener('click', salvarVeiculo);
+            document.getElementById('confirmDeleteBtn').addEventListener('click', confirmarExclusao);
 
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                localStorage.removeItem('clienteId');
-                window.location.href = 'login.html';
-            });
+            // Carregar veículos
+            await carregarVeiculos();
         });
+
+        async function carregarVeiculos() {
+            try {
+                const response = await fetch('/api/automoveis');
+                veiculos = await response.json();
+                exibirVeiculos();
+            } catch (error) {
+                console.error('Erro ao carregar veículos:', error);
+                alert('Erro ao carregar veículos');
+            }
+        }
+
+        function exibirVeiculos() {
+            const tableBody = document.getElementById('veiculosTableBody');
+            tableBody.innerHTML = '';
+
+            veiculos.forEach(veiculo => {
+                const row = document.createElement('tr');
+                row.className = 'veiculo-card';
+                
+                // Verificar se o veículo pertence ao usuário logado
+                const isProprietario = veiculo.proprietario && veiculo.proprietario.id == clienteId;
+                
+                row.innerHTML = `
+                    <td>${veiculo.modelo || '-'}</td>
+                    <td>${veiculo.marca || '-'}</td>
+                    <td>${veiculo.ano || '-'}</td>
+                    <td>${veiculo.placa || '-'}</td>
+                    <td>${veiculo.matricula || '-'}</td>
+                    <td>${veiculo.proprietario ? veiculo.proprietario.nome : '-'}</td>
+                    <td class="actions-column">
+                        ${isProprietario ? `
+                            <button class="btn btn-sm btn-primary editar-veiculo" data-id="${veiculo.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger excluir-veiculo" data-id="${veiculo.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+
+            // Adicionar eventos aos botões de edição/exclusão
+            document.querySelectorAll('.editar-veiculo').forEach(btn => {
+                btn.addEventListener('click', () => editarVeiculo(btn.dataset.id));
+            });
+            
+            document.querySelectorAll('.excluir-veiculo').forEach(btn => {
+                btn.addEventListener('click', () => prepararExclusao(btn.dataset.id));
+            });
+        }
+
+        function mostrarModalNovoVeiculo() {
+            document.getElementById('modalTitle').textContent = 'Adicionar Veículo';
+            document.getElementById('veiculoForm').reset();
+            document.getElementById('veiculoId').value = '';
+            veiculoModal.show();
+        }
+
+        function editarVeiculo(id) {
+            const veiculo = veiculos.find(v => v.id == id);
+            if (!veiculo) return;
+
+            // Verificar se o usuário é o proprietário
+            if (!veiculo.proprietario || veiculo.proprietario.id != clienteId) {
+                alert('Você só pode editar veículos que cadastrou.');
+                return;
+            }
+
+            document.getElementById('modalTitle').textContent = 'Editar Veículo';
+            document.getElementById('veiculoId').value = veiculo.id;
+            document.getElementById('matricula').value = veiculo.matricula;
+            document.getElementById('ano').value = veiculo.ano;
+            document.getElementById('marca').value = veiculo.marca;
+            document.getElementById('modelo').value = veiculo.modelo;
+            document.getElementById('placa').value = veiculo.placa;
+            
+            veiculoModal.show();
+        }
+
+        async function salvarVeiculo() {
+            const form = document.getElementById('veiculoForm');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const veiculoId = document.getElementById('veiculoId').value;
+            const veiculoData = {
+                matricula: document.getElementById('matricula').value,
+                ano: parseInt(document.getElementById('ano').value),
+                marca: document.getElementById('marca').value,
+                modelo: document.getElementById('modelo').value,
+                placa: document.getElementById('placa').value,
+                proprietarioId: parseInt(clienteId)
+            };
+
+            try {
+                let response;
+                const options = {
+                    method: veiculoId ? 'PUT' : 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(veiculoData)
+                };
+
+                if (veiculoId) {
+                    response = await fetch(`/api/automoveis/${veiculoId}`, options);
+                } else {
+                    response = await fetch('/api/automoveis', options);
+                }
+
+                if (response.ok) {
+                    veiculoModal.hide();
+                    await carregarVeiculos();
+                } else {
+                    const error = await response.text();
+                    alert(`Erro ao salvar veículo: ${error}`);
+                }
+            } catch (error) {
+                console.error('Erro ao salvar veículo:', error);
+                alert('Erro ao salvar veículo');
+            }
+        }
+
+        function prepararExclusao(id) {
+            const veiculo = veiculos.find(v => v.id == id);
+            if (!veiculo) return;
+
+            // Verificar se o usuário é o proprietário
+            if (!veiculo.proprietario || veiculo.proprietario.id != clienteId) {
+                alert('Você só pode excluir veículos que cadastrou.');
+                return;
+            }
+
+            veiculoParaExcluir = id;
+            confirmDeleteModal.show();
+        }
+
+        async function confirmarExclusao() {
+            if (!veiculoParaExcluir) return;
+
+            try {
+                const response = await fetch(`/api/automoveis/${veiculoParaExcluir}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    confirmDeleteModal.hide();
+                    await carregarVeiculos();
+                } else {
+                    alert('Erro ao excluir veículo');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir veículo:', error);
+                alert('Erro ao excluir veículo');
+            } finally {
+                veiculoParaExcluir = null;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('clienteId');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>
