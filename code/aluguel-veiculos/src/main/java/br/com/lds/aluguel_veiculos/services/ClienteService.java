@@ -49,7 +49,11 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         clienteExistente.setNome(clienteAtualizado.getNome());
-        clienteExistente.setSenha(clienteAtualizado.getSenha());
+        
+        if (clienteAtualizado.getSenha() != null && !clienteAtualizado.getSenha().isBlank()) {
+            clienteExistente.setSenha(clienteAtualizado.getSenha());
+        }
+        
         clienteExistente.setRg(clienteAtualizado.getRg());
         clienteExistente.setCpf(clienteAtualizado.getCpf());
         clienteExistente.setProfissao(clienteAtualizado.getProfissao());
