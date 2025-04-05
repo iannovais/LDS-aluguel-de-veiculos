@@ -2,16 +2,23 @@ package br.com.lds.aluguel_veiculos.services;
 
 import br.com.lds.aluguel_veiculos.exceptions.ResourceNotFoundException;
 import br.com.lds.aluguel_veiculos.models.Automovel;
+import br.com.lds.aluguel_veiculos.models.PedidoAluguel;
 import br.com.lds.aluguel_veiculos.repositories.AutomovelRepository;
+import br.com.lds.aluguel_veiculos.repositories.ContratoRepository;
+import br.com.lds.aluguel_veiculos.repositories.PedidoAluguelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AutomovelService {
+
     private final AutomovelRepository automovelRepository;
+    private final PedidoAluguelRepository pedidoAluguelRepository;
+    private final ContratoRepository contratoRepository;
 
     public List<Automovel> listarTodos() {
         return automovelRepository.findAll();
@@ -48,11 +55,17 @@ public class AutomovelService {
         return automovelRepository.save(automovelExistente);
     }
 
-    @Transactional
+@Transactional
     public void excluir(Integer id) {
-        if (!automovelRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Automóvel não encontrado");
+        Automovel automovel = automovelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Automóvel não encontrado"));
+
+        List<PedidoAluguel> pedidos = pedidoAluguelRepository.findAllByAutomovel(automovel);
+        for (PedidoAluguel pedido : pedidos) {
+            contratoRepository.deleteByPedido(pedido);
         }
-        automovelRepository.deleteById(id);
+
+        pedidoAluguelRepository.deleteAll(pedidos);
+        automovelRepository.delete(automovel);
     }
 }

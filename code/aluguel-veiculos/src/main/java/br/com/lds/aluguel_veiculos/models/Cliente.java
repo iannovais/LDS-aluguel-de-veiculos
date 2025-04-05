@@ -20,4 +20,7 @@ public class Cliente extends Usuario {
     
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rendimento> rendimentos;
+
+    @OneToMany(mappedBy = "proprietario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Automovel> automoveis;
 }

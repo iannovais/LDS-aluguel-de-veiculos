@@ -3,6 +3,7 @@ package br.com.lds.aluguel_veiculos.services;
 import br.com.lds.aluguel_veiculos.exceptions.ResourceNotFoundException;
 import br.com.lds.aluguel_veiculos.models.Cliente;
 import br.com.lds.aluguel_veiculos.models.Rendimento;
+import br.com.lds.aluguel_veiculos.repositories.AutomovelRepository;
 import br.com.lds.aluguel_veiculos.repositories.ClienteRepository;
 import br.com.lds.aluguel_veiculos.repositories.RendimentoRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class ClienteService {
     private final ClienteRepository clienteRepository;
     private final RendimentoRepository rendimentoRepository;
+    private final AutomovelRepository automovelRepository;
 
     public List<Cliente> listarTodos() {
         return clienteRepository.findAll();
@@ -75,11 +77,10 @@ public class ClienteService {
 
     @Transactional
     public void excluir(Integer id) {
-        if (!clienteRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Cliente não encontrado");
-        }
-        rendimentoRepository.deleteByClienteId(id);
-        clienteRepository.deleteById(id);
+        Cliente cliente = clienteRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
+        
+        clienteRepository.delete(cliente);
     }
 
     private void validarRendimentos(List<Rendimento> rendimentos) {

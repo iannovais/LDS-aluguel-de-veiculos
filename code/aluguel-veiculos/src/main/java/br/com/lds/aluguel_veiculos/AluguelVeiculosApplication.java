@@ -11,10 +11,8 @@ public class AluguelVeiculosApplication {
 	}
 }
 
-
-/* 
-
-Links Importantes:
+/* Links Importantes:
 
 - http://localhost:8080/swagger-ui/index.html
- */
+
+*/

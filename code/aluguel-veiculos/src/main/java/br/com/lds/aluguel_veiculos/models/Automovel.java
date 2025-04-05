@@ -1,5 +1,10 @@
 package br.com.lds.aluguel_veiculos.models;
 
+import java.util.List;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +34,8 @@ public class Automovel {
     @ManyToOne
     @JoinColumn(name = "proprietario_id", nullable = false)
     private Cliente proprietario;
+
+    @OneToMany(mappedBy = "automovel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<PedidoAluguel> pedidos;
 }
