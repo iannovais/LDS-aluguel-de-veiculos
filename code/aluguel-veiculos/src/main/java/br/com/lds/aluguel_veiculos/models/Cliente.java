@@ -9,10 +9,6 @@ import java.util.List;
 public class Cliente extends Usuario {
     public static final int MAX_RENDIMENTOS = 3;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
     @Column(unique = true, nullable = false)
     private String cpf;
     
