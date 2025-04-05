@@ -3,6 +3,8 @@ package br.com.lds.aluguel_veiculos.models;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import br.com.lds.aluguel_veiculos.enums.TipoPedido;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,13 +19,14 @@ public class PedidoAluguel {
     private Integer id;
     
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
-    
-    @ManyToOne
-    @JoinColumn(name = "automovel_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "automovel_id")
+    @JsonIgnoreProperties("pedidos") // Quebra o ciclo
     private Automovel automovel;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    @JsonIgnoreProperties({"pedidos", "automoveis"}) // Ajuste conforme necessidade
+    private Cliente cliente;
     
     @Enumerated(EnumType.STRING)
     private TipoPedido tipo;

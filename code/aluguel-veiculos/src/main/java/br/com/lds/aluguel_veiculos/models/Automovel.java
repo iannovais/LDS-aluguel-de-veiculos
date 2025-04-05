@@ -40,5 +40,6 @@ public class Automovel {
 
     @OneToMany(mappedBy = "automovel", cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private List<PedidoAluguel> pedidos;
 }
