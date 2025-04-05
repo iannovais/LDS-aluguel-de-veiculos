@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Perfil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-bottom: 50px;
+        }
+        .rendimento-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        .btn-add-rendimento {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Editar Perfil</h2>
+
+        <div class="container bg-white p-4 rounded">
+            <form id="editarForm">
+                <input type="hidden" id="clienteId">
+
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="rg" class="form-label">RG</label>
+                    <input type="text" class="form-control" id="rg" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="cpf" class="form-label">CPF</label>
+                    <input type="text" class="form-control" id="cpf" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="profissao" class="form-label">Profissão</label>
+                    <input type="text" class="form-control" id="profissao" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" required>
+                </div>
+
+                <h4 class="mt-4">Rendimentos</h4>
+                <div id="rendimentos-container">
+                </div>
+
+                <button type="button" class="btn btn-primary btn-add-rendimento" onclick="adicionarRendimento()">
+                    Adicionar Rendimento
+                </button>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    <a href="perfil.html" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="rendimento-template" class="rendimento-card" style="display: none;">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Instituição</label>
+                    <input type="text" class="form-control" name="rendimentos.instituicao">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Valor (R$)</label>
+                    <input type="number" step="0.01" class="form-control" name="rendimentos.valor">
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm" onclick="removerRendimento(this)">
+                    Remover
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rendimentoCounter = 0;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const clienteId = urlParams.get('id') || localStorage.getItem('clienteId');
+            
+            if (!clienteId) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('clienteId').value = clienteId;
+
+            try {
+                const response = await fetch(`/api/clientes/${clienteId}`);
+                if (response.ok) {
+                    const cliente = await response.json();
+                    
+                    document.getElementById('nome').value = cliente.nome;
+                    document.getElementById('rg').value = cliente.rg;
+                    document.getElementById('cpf').value = cliente.cpf;
+                    document.getElementById('profissao').value = cliente.profissao;
+                    document.getElementById('endereco').value = cliente.endereco;
+                    
+                    const container = document.getElementById('rendimentos-container');
+                    if (cliente.rendimentos && cliente.rendimentos.length > 0) {
+                        cliente.rendimentos.forEach((rendimento, index) => {
+                            const template = document.getElementById('rendimento-template');
+                            const clone = template.cloneNode(true);
+                            clone.style.display = '';
+                            clone.id = '';
+                            
+                            const inputs = clone.querySelectorAll('input');
+                            inputs[0].value = rendimento.instituicao;
+                            inputs[1].value = rendimento.valor;
+                            inputs[0].name = `rendimentos[${index}].instituicao`;
+                            inputs[1].name = `rendimentos[${index}].valor`;
+                            
+                            container.appendChild(clone);
+                        });
+                        rendimentoCounter = cliente.rendimentos.length;
+                    }
+                } else {
+                    throw new Error('Erro ao carregar dados do cliente');
+                }
+            } catch (error) {
+                alert(error.message);
+                console.error(error);
+            }
+        });
+
+        function adicionarRendimento() {
+            const container = document.getElementById('rendimentos-container');
+            const rendimentosVisiveis = container.querySelectorAll('.rendimento-card:not(#rendimento-template)');
+    
+            rendimentoCounter = rendimentosVisiveis.length;
+            
+            if (rendimentoCounter >= 3) {
+                alert('Limite máximo de 3 rendimentos atingido');
+                return;
+            }
+    
+            const template = document.getElementById('rendimento-template');
+            const clone = template.cloneNode(true);
+            clone.style.display = '';
+            clone.id = '';
+            
+            const inputs = clone.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.name = input.name.replace('rendimentos.', `rendimentos[${rendimentoCounter}].`);
+                input.value = '';
+            });
+    
+            container.appendChild(clone);
+            rendimentoCounter++;
+        }
+    
+        function removerRendimento(button) {
+            if (confirm('Tem certeza que deseja remover este rendimento?')) {
+                const card = button.closest('.rendimento-card');
+                card.remove();
+
+                const container = document.getElementById('rendimentos-container');
+                const rendimentosVisiveis = container.querySelectorAll('.rendimento-card:not(#rendimento-template)');
+                
+                rendimentosVisiveis.forEach((card, index) => {
+                    const inputs = card.querySelectorAll('input');
+                    inputs[0].name = `rendimentos[${index}].instituicao`;
+                    inputs[1].name = `rendimentos[${index}].valor`;
+                });
+                
+                rendimentoCounter = rendimentosVisiveis.length;
+            }
+        }
+    
+        document.getElementById('editarForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const clienteId = document.getElementById('clienteId').value;
+            
+            const rendimentos = [];
+            const rendimentoCards = document.querySelectorAll('#rendimentos-container .rendimento-card:not(#rendimento-template)');
+    
+            rendimentoCards.forEach((card, index) => {
+                const instituicaoInput = card.querySelector(`input[name="rendimentos[${index}].instituicao"]`);
+                const valorInput = card.querySelector(`input[name="rendimentos[${index}].valor"]`);
+                
+                if (instituicaoInput && valorInput) {
+                    const instituicao = instituicaoInput.value;
+                    const valor = valorInput.value;
+                    
+                    if (instituicao && valor) {
+                        rendimentos.push({
+                            instituicao: instituicao,
+                            valor: parseFloat(valor)
+                        });
+                    } else if (instituicao || valor) {
+                        alert('Preencha ambos instituição e valor para cada rendimento');
+                        return;
+                    }
+                }
+            });
+
+            const clienteData = {
+                nome: document.getElementById('nome').value,
+                rg: document.getElementById('rg').value,
+                cpf: document.getElementById('cpf').value,
+                profissao: document.getElementById('profissao').value,
+                endereco: document.getElementById('endereco').value,
+                rendimentos: rendimentos
+            };
+    
+            try {
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+    
+                const response = await fetch(`/api/clientes/${clienteId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(clienteData)
+                });
+    
+                if (response.ok) {
+                    alert('Perfil atualizado com sucesso!');
+                    window.location.href = 'perfil.html';
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'Erro ao atualizar perfil');
+                }
+            } catch (error) {
+                alert('Erro ao conectar com o servidor');
+                console.error(error);
+            } finally {
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Salvar Alterações';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

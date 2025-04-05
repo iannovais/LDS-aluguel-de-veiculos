@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,13 +22,23 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
+    public Optional<Cliente> findByCpfAndSenha(String cpf, String senha) {
+        return clienteRepository.findByCpfAndSenha(cpf, senha);
+    }
+
     public Cliente obterPorId(Integer id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
 
     @Transactional
     public Cliente cadastrar(Cliente cliente) {
+        if (clienteRepository.existsByCpf(cliente.getCpf())) {
+            throw new IllegalStateException("CPF já cadastrado");
+        }
+        if (clienteRepository.existsByRg(cliente.getRg())) {
+            throw new IllegalStateException("RG já cadastrado");
+        }
         validarRendimentos(cliente.getRendimentos());
         return clienteRepository.save(cliente);
     }

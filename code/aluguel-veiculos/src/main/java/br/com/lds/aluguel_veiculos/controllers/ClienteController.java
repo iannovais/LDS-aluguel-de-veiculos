@@ -1,6 +1,7 @@
 package br.com.lds.aluguel_veiculos.controllers;
 
 import br.com.lds.aluguel_veiculos.models.Cliente;
+import br.com.lds.aluguel_veiculos.repositories.ClienteRepository;
 import br.com.lds.aluguel_veiculos.services.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ClienteController {
 
     private final ClienteService clienteService;
+    private final ClienteRepository clienteRepository;
 
     @GetMapping
     @Operation(summary = "Listar todos os clientes")
@@ -32,24 +34,56 @@ public class ClienteController {
 
     @PostMapping
     @Operation(summary = "Cadastrar novo cliente")
-    public ResponseEntity<Cliente> cadastrar(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> cadastrar(@RequestBody Cliente cliente) {
         if (cliente.getRendimentos() != null) {
             cliente.getRendimentos().forEach(r -> r.setCliente(cliente));
         }
-        return ResponseEntity.ok(clienteService.cadastrar(cliente));
+        
+        try {
+            if (clienteRepository.existsByCpf(cliente.getCpf())) {
+                return ResponseEntity.badRequest().body("CPF já cadastrado");
+            }
+            
+            if (clienteRepository.existsByRg(cliente.getRg())) {
+                return ResponseEntity.badRequest().body("RG já cadastrado");
+            }
+            
+            return ResponseEntity.ok(clienteService.cadastrar(cliente));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erro ao cadastrar cliente");
+        }
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar cliente existente")
-    public ResponseEntity<Cliente> atualizar(
+    public ResponseEntity<?> atualizar(
             @PathVariable Integer id, 
             @RequestBody Cliente clienteAtualizado) {
         
-        if (clienteAtualizado.getRendimentos() != null) {
-            clienteAtualizado.getRendimentos().forEach(r -> r.setCliente(clienteAtualizado));
+        try {
+            if (clienteAtualizado.getRendimentos() != null) {
+                clienteAtualizado.getRendimentos().forEach(r -> r.setCliente(clienteAtualizado));
+            }
+
+            Cliente clienteExistente = clienteRepository.findById(id).orElseThrow();
+            
+            if (!clienteExistente.getCpf().equals(clienteAtualizado.getCpf())) {
+                if (clienteRepository.existsByCpf(clienteAtualizado.getCpf())) {
+                    return ResponseEntity.badRequest().body("CPF já cadastrado em outro cliente");
+                }
+            }
+            
+            if (!clienteExistente.getRg().equals(clienteAtualizado.getRg())) {
+                if (clienteRepository.existsByRg(clienteAtualizado.getRg())) {
+                    return ResponseEntity.badRequest().body("RG já cadastrado em outro cliente");
+                }
+            }
+            
+            return ResponseEntity.ok(clienteService.atualizar(id, clienteAtualizado));
+            
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erro ao atualizar cliente");
         }
-        
-        return ResponseEntity.ok(clienteService.atualizar(id, clienteAtualizado));
     }
 
     @DeleteMapping("/{id}")

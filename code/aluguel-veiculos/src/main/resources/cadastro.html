@@ -3,12 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title th:text="${id != null} ? 'Editar Cliente' : 'Novo Cliente'"></title>
+    <title>Cadastro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
-            padding-bottom: 50px;
+            padding: 20px;
         }
 
         .rendimento-card {
@@ -27,40 +27,39 @@
 
 <body>
     <div class="container mt-4">
-        <h2 th:text="${id != null} ? 'Editar Cliente' : 'Novo Cliente'"></h2>
+        <h2 class="text-center mb-4">Cadastro de Usuário</h2>
 
         <div class="container bg-white p-4 rounded">
-            <form th:action="${id != null} ? @{/clientes/atualizar/{id}(id=${id})} : @{/clientes/salvar}" method="post"
-                th:object="${cliente}">
+            <form id="cadastroForm" method="post">
 
                 <div class="mb-3">
                     <label for="nome" class="form-label">Nome</label>
-                    <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
                 </div>
 
-                <div class="mb-3" th:if="${id == null}">
+                <div class="mb-3">
                     <label for="senha" class="form-label">Senha</label>
-                    <input type="password" class="form-control" id="senha" th:field="*{senha}" required>
+                    <input type="password" class="form-control" id="senha" name="senha" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="rg" class="form-label">RG</label>
-                    <input type="text" class="form-control" id="rg" th:field="*{rg}" required>
+                    <input type="text" class="form-control" id="rg" name="rg" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="cpf" class="form-label">CPF</label>
-                    <input type="text" class="form-control" id="cpf" th:field="*{cpf}" required>
+                    <input type="text" class="form-control" id="cpf" name="cpf" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="profissao" class="form-label">Profissão</label>
-                    <input type="text" class="form-control" id="profissao" th:field="*{profissao}" required>
+                    <input type="text" class="form-control" id="profissao" name="profissao" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="endereco" class="form-label">Endereço</label>
-                    <input type="text" class="form-control" id="endereco" th:field="*{endereco}" required>
+                    <input type="text" class="form-control" id="endereco" name="endereco" required>
                 </div>
 
                 <h4 class="mt-4">Rendimentos</h4>
@@ -90,33 +89,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div th:each="rendimento, iterStat : *{rendimentos}"
-                        th:if="${rendimento.instituicao != null or rendimento.valor != null}" class="rendimento-card">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Instituição</label>
-                                    <input type="text" class="form-control"
-                                        th:name="'rendimentos[' + ${iterStat.index} + '].instituicao'"
-                                        th:value="${rendimento.instituicao}">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Valor (R$)</label>
-                                    <input type="number" step="0.01" class="form-control"
-                                        th:name="'rendimentos[' + ${iterStat.index} + '].valor'"
-                                        th:value="${rendimento.valor}">
-                                </div>
-                            </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                                <button type="button" class="btn btn-danger btn-sm" onclick="removerRendimento(this)">
-                                    Remover
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <button type="button" class="btn btn-primary btn-add-rendimento" onclick="adicionarRendimento()">
@@ -124,8 +96,8 @@
                 </button>
 
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                    <a th:href="@{/clientes}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    <a href="login.html" class="btn btn-secondary">Voltar para Login</a>
                 </div>
             </form>
         </div>
@@ -137,7 +109,7 @@
         function adicionarRendimento() {
             const container = document.getElementById('rendimentos-container');
             const rendimentosVisiveis = container.querySelectorAll('.rendimento-card:not(#rendimento-template)');
-
+    
             rendimentoCounter = rendimentosVisiveis.length;
             
             if (rendimentoCounter > 3) {
@@ -156,7 +128,7 @@
             });
     
             container.appendChild(clone);
-            rendimentoCounter++; 
+            rendimentoCounter++;
         }
     
         function removerRendimento(button) {
@@ -176,9 +148,73 @@
             }
         }
     
-        document.addEventListener('DOMContentLoaded', function() {
-            const rendimentosExistentes = document.querySelectorAll('#rendimentos-container > .rendimento-card:not(#rendimento-template)');
-            rendimentoCounter = rendimentosExistentes.length;
+        document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const cpf = document.getElementById('cpf').value;
+    
+            const rendimentos = [];
+            const rendimentoCards = document.querySelectorAll('#rendimentos-container .rendimento-card:not(#rendimento-template)');
+    
+            rendimentoCards.forEach((card, index) => {
+                const instituicaoInput = card.querySelector(`input[name="rendimentos[${index}].instituicao"]`);
+                const valorInput = card.querySelector(`input[name="rendimentos[${index}].valor"]`);
+                
+                if (instituicaoInput && valorInput) {
+                    const instituicao = instituicaoInput.value;
+                    const valor = valorInput.value;
+                    
+                    if (instituicao && valor) {
+                        rendimentos.push({
+                            instituicao: instituicao,
+                            valor: parseFloat(valor)
+                        });
+                    } else if (instituicao || valor) {
+                        alert('Preencha ambos instituição e valor para cada rendimento');
+                        return;
+                    }
+                }
+            });
+
+            const cliente = {
+                nome: document.getElementById('nome').value,
+                senha: document.getElementById('senha').value,
+                rg: document.getElementById('rg').value,
+                cpf: cpf,
+                profissao: document.getElementById('profissao').value,
+                endereco: document.getElementById('endereco').value,
+                rendimentos: rendimentos
+            };
+    
+            try {
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cadastrando...';
+    
+                const response = await fetch('/api/clientes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cliente)
+                });
+    
+                if (response.ok) {
+                    alert('Cadastro realizado com sucesso!');
+                    window.location.href = '/login.html';
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'Erro ao cadastrar');
+                }
+            } catch (error) {
+                alert('Erro ao conectar com o servidor');
+            } finally {
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Cadastrar';
+                }
+            }
         });
     </script>
 </body>

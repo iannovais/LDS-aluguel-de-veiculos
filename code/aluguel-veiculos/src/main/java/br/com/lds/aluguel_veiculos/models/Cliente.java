@@ -13,8 +13,12 @@ public class Cliente extends Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    private String rg;
+    @Column(unique = true, nullable = false)
     private String cpf;
+    
+    @Column(unique = true, nullable = false)
+    private String rg;
+    
     private String profissao;
     private String endereco;
     
