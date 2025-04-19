@@ -1,5 +1,5 @@
-# Vururu
-A empresa Vururu de aluguel de carros busca modernizar e automatizar seus processos de gestão de pedidos de aluguel, contratos e interações com clientes e agentes (empresas e bancos). Para isso, será desenvolvido um Sistema de Gestão de Aluguel que permitirá a gestão completa do ciclo de vida dos pedidos de aluguel, desde a solicitação até a execução do contrato.
+# Moeda Estudantil
+O sistema de moeda estudantil visa automatizar o reconhecimento de alunos, professores e empresas parceiras em uma instituição de ensino. Professores recebem 1.000 moedas por semestre para distribuir entre os alunos com base no desempenho. Alunos podem trocar as moedas por vantagens de empresas parceiras, como descontos e produtos. O sistema inclui autenticação, extratos de transações e notificações por email, otimizando a gestão e a transparência das interações.
 
 ## Integrantes
 * Ian dos Reis Novais
